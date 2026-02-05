@@ -243,3 +243,24 @@ st.pyplot(fig6)
 
 corr_val = scatter_df["Transactions"].corr(scatter_df["Revenue"])
 st.write(f"**Correlation coefficient:** {corr_val:.3f}")
+# Choose top N plazas by total revenue
+N = 20
+topN_plazas = plaza_total.head(N)["Fee Plaza Name"]
+
+heat_data = (
+    df_long[df_long["Fee Plaza Name"].isin(topN_plazas)]
+    .pivot_table(
+        index="Fee Plaza Name",
+        columns="Month",
+        values="Revenue",
+        aggfunc="sum"
+    )
+)
+
+plt.figure(figsize=(12, 8))
+sns.heatmap(heat_data, annot=False)
+plt.title(f"Revenue Heatmap (Top {N} Plazas) - Month vs Plaza")
+plt.xlabel("Month")
+plt.ylabel("Fee Plaza Name")
+plt.tight_layout()
+plt.show()
