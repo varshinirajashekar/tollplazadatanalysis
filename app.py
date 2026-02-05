@@ -244,21 +244,20 @@ st.pyplot(fig6)
 corr_val = scatter_df["Transactions"].corr(scatter_df["Revenue"])
 st.write(f"**Correlation coefficient:** {corr_val:.3f}")
 #--------------- Choose top N plazas by total revenue--------------------
-topN_plazas = plaza_total.head(10)["Fee Plaza Name"]
-heat_data = (
-    df_long[df_long["Fee Plaza Name"].isin(topN_plazas)]
-    .pivot_table(
-        index="Fee Plaza Name",
-        columns="Month",
-        values="Revenue",
-        aggfunc="sum"
-    )
+# ---------------- TOP 10 PLAZAS ----------------
+plaza_total = (
+    df_filtered
+    .groupby("Fee Plaza Name")["Revenue"]
+    .sum()
+    .sort_values(ascending=False)
+    .reset_index()
 )
 
-plt.figure(figsize=(12, 8))
-sns.heatmap(heat_data, annot=False)
-plt.title(f"Revenue Heatmap (Top {N} Plazas) - Month vs Plaza")
-plt.xlabel("Month")
-plt.ylabel("Fee Plaza Name")
-plt.tight_layout()
-plt.show()
+top_plazas = plaza_total.head(10)
+
+fig4, ax4 = plt.subplots(figsize=(8, 6))
+ax4.barh(top_plazas["Fee Plaza Name"], top_plazas["Revenue"])
+ax4.set_title("Top 10 Toll Plazas by Revenue")
+ax4.invert_yaxis()
+
+st.pyplot(fig4)
