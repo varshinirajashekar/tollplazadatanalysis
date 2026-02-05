@@ -243,10 +243,9 @@ st.pyplot(fig6)
 
 corr_val = scatter_df["Transactions"].corr(scatter_df["Revenue"])
 st.write(f"**Correlation coefficient:** {corr_val:.3f}")
-# Choose top N plazas by total revenue
+#--------------- Choose top N plazas by total revenue--------------------
 N = 20
 topN_plazas = plaza_total.head(N)["Fee Plaza Name"]
-
 heat_data = (
     df_long[df_long["Fee Plaza Name"].isin(topN_plazas)]
     .pivot_table(
