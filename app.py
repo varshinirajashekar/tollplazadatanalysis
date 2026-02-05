@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 # ---------------- PAGE CONFIG ----------------
@@ -243,21 +244,31 @@ st.pyplot(fig6)
 
 corr_val = scatter_df["Transactions"].corr(scatter_df["Revenue"])
 st.write(f"**Correlation coefficient:** {corr_val:.3f}")
-#--------------- Choose top N plazas by total revenue--------------------
-# ---------------- TOP 10 PLAZAS ----------------
-plaza_total = (
+)
+# ---------------- HEATMAP: STATE vs MONTH ----------------
+st.subheader("Revenue Heatmap (State vs Month)")
+
+heatmap_df = (
     df_filtered
-    .groupby("Fee Plaza Name")["Revenue"]
-    .sum()
-    .sort_values(ascending=False)
-    .reset_index()
+    .pivot_table(
+        values="Revenue",
+        index="State",
+        columns="Month",
+        aggfunc="sum"
+    )
 )
 
-top_plazas = plaza_total.head(10)
-
-fig4, ax4 = plt.subplots(figsize=(8, 6))
-ax4.barh(top_plazas["Fee Plaza Name"], top_plazas["Revenue"])
-ax4.set_title("Top 10 Toll Plazas by Revenue")
-ax4.invert_yaxis()
-
-st.pyplot(fig4)
+if heatmap_df.empty:
+    st.info("Not enough data to display heatmap.")
+else:
+    fig_hm, ax_hm = plt.subplots(figsize=(12, 6))
+    sns.heatmap(
+        heatmap_df,
+        cmap="YlOrRd",
+        linewidths=0.5,
+        ax=ax_hm
+    )
+    ax_hm.set_title("Revenue Distribution Across States and Months")
+    ax_hm.set_xlabel("Month")
+    ax_hm.set_ylabel("State")
+    st.pyplot(fig_hm)
