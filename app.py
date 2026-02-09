@@ -244,7 +244,7 @@ st.pyplot(fig6)
 
 corr_val = scatter_df["Transactions"].corr(scatter_df["Revenue"])
 st.write(f"**Correlation coefficient:** {corr_val:.3f}")
-)
+
 # ---------------- HEATMAP: STATE vs MONTH ----------------
 st.subheader("Revenue Heatmap (State vs Month)")
 
